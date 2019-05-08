@@ -6,6 +6,7 @@ import com.imooc.exception.SellException;
 import com.imooc.form.ProductForm;
 import com.imooc.service.CategoryService;
 import com.imooc.service.ProductService;
+import com.imooc.service.WebSocket;
 import com.imooc.utils.KeyUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,9 @@ public class SellerProductController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private WebSocket webSocket;
 
     /**
      * 列表
@@ -154,5 +158,13 @@ public class SellerProductController {
 
         map.put("url", "/sell/seller/product/list");
         return new ModelAndView("common/success", map);
+    }
+
+    @GetMapping("/send")
+    public void send() throws InterruptedException {
+        while (true) {
+            webSocket.sendMessage(String.valueOf(System.currentTimeMillis()));
+            Thread.sleep(500);
+        }
     }
 }
